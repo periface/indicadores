@@ -1,5 +1,4 @@
-package sxengine
-
+package types
 
 type Dimension struct {
 	Nombre      string      `json:"Nombre"`
@@ -7,18 +6,19 @@ type Dimension struct {
 	IdDimension int         `json:"IdDimension"`
 	Frecuencia  string      `json:"Frecuencia"`
 	Indicadores []Indicador `json:"indicadores"`
+	Meta        float64     `json:"Meta"`
 }
 
 func (d *Dimension) AddIndicador(idIndicador int, nombre string, codigo string, unidadMedida string, metodoCalculo string) Indicador {
 	indicador := Indicador{
-		IdIndicador: idIndicador,
-		Nombre:      nombre,
-		Codigo:      codigo,
-        UnidadDeMedida: unidadMedida,
-        MetodoDeCalculo: metodoCalculo,
-        Dimension: *d,
-        IdDimension: d.IdDimension,
-        Variables: []Variable{},
+		IdIndicador:     idIndicador,
+		Nombre:          nombre,
+		Codigo:          codigo,
+		UnidadDeMedida:  unidadMedida,
+		MetodoDeCalculo: metodoCalculo,
+		Dimension:       *d,
+		IdDimension:     d.IdDimension,
+		Variables:       []Variable{},
 	}
 	d.Indicadores = append(d.Indicadores, indicador)
 	return indicador

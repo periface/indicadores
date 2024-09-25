@@ -1,4 +1,4 @@
-package sxengine
+package types
 
 type Departamento struct {
 	IdDepartamento int    `json:"IdDepartamento"`

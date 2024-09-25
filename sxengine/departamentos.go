@@ -1,6 +1,9 @@
 package sxengine
 
-import "errors"
+import (
+	"errors"
+	. "secretaria.admin/indicadores/sxengine/types"
+)
 
 func (i *GestionDepartamental) CreateDependencia(idDependencia int, nombre string) {
 	dependencia := Dependencia{

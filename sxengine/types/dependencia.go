@@ -1,4 +1,4 @@
-package sxengine
+package types
 
 type Dependencia struct {
 	IdDependencia int    `json:"IdDependencia"`

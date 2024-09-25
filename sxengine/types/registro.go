@@ -1,4 +1,4 @@
-package sxengine
+package types
 
 type Registro struct {
     IdRegistro int

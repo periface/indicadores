@@ -1,4 +1,4 @@
-package sxengine
+package types
 
 type Indicador struct {
 	IdIndicador     int    `json:"IdIndicador"`

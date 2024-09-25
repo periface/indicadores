@@ -13,6 +13,13 @@ func printAsJson(i interface{}) {
 	}
 	println(string(json))
 }
+
+func f(x int) int {
+	valor := x
+	vida := valor * 10
+    return vida
+}
+
 func main() {
 	manager := sxengine.GestorDeIndicadores{}
 	//Creamos la dependencia de la secretaria de administracion

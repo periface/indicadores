@@ -1,4 +1,4 @@
-package sxengine
+package types
 type Variable struct {
 	IdVariable  int       `json:"IdVariable"`
 	Nombre      string    `json:"Nombre"`

@@ -1,6 +1,11 @@
 package sxengine
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"secretaria.admin/indicadores/helpers"
+	. "secretaria.admin/indicadores/sxengine/types"
+)
 
 type Frecuencia int
 
@@ -25,14 +30,13 @@ type GestionDeIndicadores struct {
 	dimensiones []Dimension
 }
 type AlmacenDeRegistros struct {
-    _db *sql.DB
-    registros []Registro
-
+	_db       *sql.DB
+	registros []Registro
 }
 type GestorDeIndicadores struct {
 	GestionDepartamental          GestionDepartamental
 	GestionDeIndicadores          GestionDeIndicadores
-    RelacionDepartamentoIndicador []DepartamentoIndicador
+	RelacionDepartamentoIndicador []DepartamentoIndicador
 	_db                           *sql.DB
 }
 
@@ -72,17 +76,19 @@ func (manager *GestorDeIndicadores) AsignarIndicador(idDepartamento int, idIndic
 		Departamento:   departamento,
 	})
 }
-func (manager *GestorDeIndicadores) GetIndicadores(idDepartamento int) []Indicador {
+func (manager *GestorDeIndicadores) GetIndicadoresDeDepartamento(idDepartamento int) []Indicador {
 	indicadores := []Indicador{}
 	for _, relacion := range manager.RelacionDepartamentoIndicador {
 		if relacion.IdDepartamento == idDepartamento {
-            println("Indicador: ", relacion.Indicador.IdIndicador)
+			println("Relacion: ")
+			helpers.PrintAsJson(relacion)
+			println("============")
 			indicador, err := manager.GestionDeIndicadores.GetIndicadorById(relacion.Indicador.IdIndicador)
-            indicador.Dimension, err = manager.GestionDeIndicadores.GetDimensionById(indicador.IdDimension)
+			indicador.Dimension, err = manager.GestionDeIndicadores.GetDimensionById(indicador.IdDimension)
 			if err != nil {
-                panic(err)
+				panic(err)
 			}
-            indicadores = append(indicadores, indicador)
+			indicadores = append(indicadores, indicador)
 
 		}
 	}
@@ -100,16 +106,23 @@ func (gdi *GestorDeIndicadores) ShowReport() {
 			println("====================================")
 			departamentos := area.Departamentos
 			for _, departamento := range departamentos {
-				indicadores := gdi.GetIndicadores(departamento.IdDepartamento)
+				indicadores := gdi.GetIndicadoresDeDepartamento(departamento.IdDepartamento)
 				if len(indicadores) == 0 {
 					println(departamento.Nombre + ": No hay indicadores en este departamento")
 					continue
 				}
 				println("Departamento: ", departamento.Nombre)
 				for _, indicador := range indicadores {
-                    println("Dimension: ", indicador.Dimension.Nombre)
-                    println("====================================")
+					println("Dimension: ", indicador.Dimension.Nombre)
+					println("====================================")
 					variables := indicador.Variables
+                    if len(variables) == 0 {
+                        println("Indicador: ")
+                        println(">>>>>> ", indicador.Nombre)
+                        println("Variables: ")
+                        println("<<<<<< No hay variables")
+                        println("====================================")
+                    }
 					if len(variables) > 0 {
 						println("Indicador: ")
 						println(">>>>>> ", indicador.Nombre)
@@ -117,6 +130,7 @@ func (gdi *GestorDeIndicadores) ShowReport() {
 						for _, variable := range variables {
 							println("<<<<<< ", variable.Nombre)
 						}
+                        println("====================================")
 					}
 				}
 				println("====================================")

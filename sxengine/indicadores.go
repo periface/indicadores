@@ -3,6 +3,9 @@ package sxengine
 import (
 	"errors"
 	"strconv"
+
+	"secretaria.admin/indicadores/helpers"
+	. "secretaria.admin/indicadores/sxengine/types"
 )
 
 func (gi *GestionDeIndicadores) GetDimensiones() []Dimension {
@@ -21,13 +24,15 @@ func (gi *GestionDeIndicadores) AddDimension(idDimension int, nombre string, fre
 }
 
 func (gi *GestionDeIndicadores) GetDimensionById(idDimension int) (Dimension, error) {
-	for i := range gi.dimensiones {
-		if gi.dimensiones[i].IdDimension == idDimension {
-			return gi.dimensiones[i], nil
+	helpers.PrintAsJson(gi.dimensiones)
+	for _, dimension := range gi.dimensiones {
+		println(dimension.IdDimension)
+		if dimension.IdDimension == idDimension {
+			return dimension, nil
 		}
 	}
-    return Dimension{},
-        errors.New("Dimension not found with id: " + strconv.Itoa(idDimension))
+	return Dimension{},
+		errors.New("Dimension not found with id: " + strconv.Itoa(idDimension))
 }
 
 func (gi *GestionDeIndicadores) AddIndicador(dimension *Dimension, indicador Indicador) Indicador {
@@ -52,7 +57,12 @@ func (gi *GestionDeIndicadores) GetIndicadorById(idIndicador int) (Indicador, er
 	for i := range gi.dimensiones {
 		for j := range gi.dimensiones[i].Indicadores {
 			if gi.dimensiones[i].Indicadores[j].IdIndicador == idIndicador {
-				return gi.dimensiones[i].Indicadores[j], nil
+				indicador := gi.dimensiones[i].Indicadores[j]
+				if indicador.Dimension.IdDimension == 0 {
+					indicador.Dimension = gi.dimensiones[i]
+					indicador.IdDimension = gi.dimensiones[i].IdDimension
+				}
+				return indicador, nil
 			}
 		}
 	}

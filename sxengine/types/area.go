@@ -1,4 +1,4 @@
-package sxengine
+package types
 
 type Area struct {
 	IdArea int    `json:"IdArea"`
