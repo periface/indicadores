@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 
-	"secretaria.admin/indicadores/models"
+	"secretaria.admin/indicadores/sxengine"
 )
 
 func printAsJson(i interface{}) {
@@ -14,7 +14,7 @@ func printAsJson(i interface{}) {
 	println(string(json))
 }
 func main() {
-	manager := models.GestorDeIndicadores{}
+	manager := sxengine.GestorDeIndicadores{}
 	//Creamos la dependencia de la secretaria de administracion
 	print(manager)
 }

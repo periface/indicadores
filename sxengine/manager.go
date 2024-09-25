@@ -24,11 +24,16 @@ type GestionDeIndicadores struct {
 	_db         *sql.DB
 	dimensiones []Dimension
 }
+type AlmacenDeRegistros struct {
+    _db *sql.DB
+    registros []Registro
+
+}
 type GestorDeIndicadores struct {
 	GestionDepartamental          GestionDepartamental
 	GestionDeIndicadores          GestionDeIndicadores
+    RelacionDepartamentoIndicador []DepartamentoIndicador
 	_db                           *sql.DB
-	RelacionDepartamentoIndicador []DepartamentoIndicador
 }
 
 func NewGestionDepartamental(db *sql.DB) GestionDepartamental {
@@ -71,10 +76,14 @@ func (manager *GestorDeIndicadores) GetIndicadores(idDepartamento int) []Indicad
 	indicadores := []Indicador{}
 	for _, relacion := range manager.RelacionDepartamentoIndicador {
 		if relacion.IdDepartamento == idDepartamento {
-			indicador, err := manager.GestionDeIndicadores.GetIndicadorById(relacion.IdIndicador)
-			if err == nil {
-				indicadores = append(indicadores, indicador)
+            println("Indicador: ", relacion.Indicador.IdIndicador)
+			indicador, err := manager.GestionDeIndicadores.GetIndicadorById(relacion.Indicador.IdIndicador)
+            indicador.Dimension, err = manager.GestionDeIndicadores.GetDimensionById(indicador.IdDimension)
+			if err != nil {
+                panic(err)
 			}
+            indicadores = append(indicadores, indicador)
+
 		}
 	}
 	return indicadores
@@ -83,14 +92,12 @@ func (manager *GestorDeIndicadores) GetIndicadores(idDepartamento int) []Indicad
 func (gdi *GestorDeIndicadores) ShowReport() {
 	dependencias := gdi.GestionDepartamental.GetDependencias()
 	for _, dependencia := range dependencias {
-		println("====================================")
 		println("Dependencia: ", dependencia.Nombre)
 		println("====================================")
 		areas := dependencia.Areas
 		for _, area := range areas {
 			println("Area: ", area.Nombre)
 			println("====================================")
-
 			departamentos := area.Departamentos
 			for _, departamento := range departamentos {
 				indicadores := gdi.GetIndicadores(departamento.IdDepartamento)
@@ -100,23 +107,17 @@ func (gdi *GestorDeIndicadores) ShowReport() {
 				}
 				println("Departamento: ", departamento.Nombre)
 				for _, indicador := range indicadores {
-
+                    println("Dimension: ", indicador.Dimension.Nombre)
+                    println("====================================")
 					variables := indicador.Variables
 					if len(variables) > 0 {
-
 						println("Indicador: ")
 						println(">>>>>> ", indicador.Nombre)
 						println("Variables: ")
 						for _, variable := range variables {
 							println("<<<<<< ", variable.Nombre)
 						}
-					} else {
-                        println("Indicador: ")
-                        println(">>>>>> ", indicador.Nombre)
-                        println("Variables: ")
-                        println("<<<<<< No hay variables en este indicador")
-                    }
-
+					}
 				}
 				println("====================================")
 			}

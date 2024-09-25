@@ -1,6 +1,9 @@
 package sxengine
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
 
 func (gi *GestionDeIndicadores) GetDimensiones() []Dimension {
 	return gi.dimensiones
@@ -23,7 +26,8 @@ func (gi *GestionDeIndicadores) GetDimensionById(idDimension int) (Dimension, er
 			return gi.dimensiones[i], nil
 		}
 	}
-	return Dimension{}, errors.New("Dimension not found")
+    return Dimension{},
+        errors.New("Dimension not found with id: " + strconv.Itoa(idDimension))
 }
 
 func (gi *GestionDeIndicadores) AddIndicador(dimension *Dimension, indicador Indicador) Indicador {
