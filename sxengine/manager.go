@@ -2,6 +2,7 @@ package sxengine
 
 import (
 	"database/sql"
+	"time"
 
 	"secretaria.admin/indicadores/helpers"
 	. "secretaria.admin/indicadores/sxengine/types"
@@ -59,7 +60,7 @@ func NewGestorDeIndicadores(db *sql.DB) GestorDeIndicadores {
 		_db:                  db,
 	}
 }
-func (manager *GestorDeIndicadores) AsignarIndicador(idDepartamento int, idIndicador int) {
+func (manager *GestorDeIndicadores) AsignarIndicador(idDepartamento int, idIndicador int, fechaInicio time.Time) {
 
 	departamento, err := manager.GestionDepartamental.GetDepartamento(idDepartamento)
 	if err != nil {
@@ -74,7 +75,9 @@ func (manager *GestorDeIndicadores) AsignarIndicador(idDepartamento int, idIndic
 		IdIndicador:    idIndicador,
 		Indicador:      indicador,
 		Departamento:   departamento,
+		FechaInicio:    fechaInicio,
 	})
+
 }
 func (manager *GestorDeIndicadores) GetIndicadoresDeDepartamento(idDepartamento int) []Indicador {
 	indicadores := []Indicador{}
@@ -116,13 +119,13 @@ func (gdi *GestorDeIndicadores) ShowReport() {
 					println("Dimension: ", indicador.Dimension.Nombre)
 					println("====================================")
 					variables := indicador.Variables
-                    if len(variables) == 0 {
-                        println("Indicador: ")
-                        println(">>>>>> ", indicador.Nombre)
-                        println("Variables: ")
-                        println("<<<<<< No hay variables")
-                        println("====================================")
-                    }
+					if len(variables) == 0 {
+						println("Indicador: ")
+						println(">>>>>> ", indicador.Nombre)
+						println("Variables: ")
+						println("<<<<<< No hay variables")
+						println("====================================")
+					}
 					if len(variables) > 0 {
 						println("Indicador: ")
 						println(">>>>>> ", indicador.Nombre)
@@ -130,7 +133,7 @@ func (gdi *GestorDeIndicadores) ShowReport() {
 						for _, variable := range variables {
 							println("<<<<<< ", variable.Nombre)
 						}
-                        println("====================================")
+						println("====================================")
 					}
 				}
 				println("====================================")

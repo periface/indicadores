@@ -1,12 +1,26 @@
 package main
 
 import (
+	"testing"
+	"time"
+
 	"secretaria.admin/indicadores/sxengine"
 	. "secretaria.admin/indicadores/sxengine/types"
-	"testing"
 )
 
 var gestor = sxengine.GestorDeIndicadores{}
+var ayer = time.Now().AddDate(0, 0, -1)
+var hoy = time.Now()
+var seisMesesAtras = time.Now().AddDate(0, -6, 0)
+var seisMesesAdelante = time.Now().AddDate(0, 6, 0)
+var unMesAtras = time.Now().AddDate(0, -1, 0)
+var unMesAdelante = time.Now().AddDate(0, 1, 0)
+var unAnioAdelante = time.Now().AddDate(1, 0, 0)
+var unAnioAtras = time.Now().AddDate(-1, 0, 0)
+var dosMesesAtras = time.Now().AddDate(0, -2, 0)
+var dosMesesAdelante = time.Now().AddDate(0, 2, 0)
+var tresMesesAtras = time.Now().AddDate(0, -3, 0)
+var tresMesesAdelante = time.Now().AddDate(0, 3, 0)
 
 func TestGestorDepartamental(t *testing.T) {
 	ConstruirDependencias(t, &gestor)
@@ -17,12 +31,52 @@ func TestGestorIndicadores(t *testing.T) {
 func TestGestorRelaciones(t *testing.T) {
 	ContruirRelaciones(t, &gestor)
 }
+func TestRegistros(t *testing.T) {}
 func TestExpressions(t *testing.T) {
 	RunExpressions(t, &gestor)
 	gestor.ShowReport()
 }
+
 func RunExpressions(t *testing.T, gestor *sxengine.GestorDeIndicadores) {
 	println("Running expressions")
+}
+func ConstruirRegistros(t *testing.T, gestor *sxengine.GestorDeIndicadores) {
+	almacenRegistros := &sxengine.AlmacenDeRegistros{}
+
+
+
+
+	almacenRegistros.AddRegistro(
+		Registro{
+			IdRegistro:     1,
+			IdIndicador:    1,
+			IdDepartamento: 1,
+			IdVariable:     1,
+			Fecha:          time.Now(),
+			Valor:          10,
+		},
+	)
+	almacenRegistros.AddRegistro(
+		Registro{
+			IdRegistro:     2,
+			IdIndicador:    1,
+			IdDepartamento: 1,
+			IdVariable:     2,
+			Valor:          20,
+			Fecha:          time.Now(),
+		},
+	)
+	almacenRegistros.AddRegistro(
+		Registro{
+			IdRegistro:     3,
+			IdIndicador:    2,
+			IdDepartamento: 1,
+			IdVariable:     3,
+			Valor:          5,
+			Fecha:          time.Now(),
+		},
+	)
+
 }
 func ContruirRelaciones(t *testing.T, gestor *sxengine.GestorDeIndicadores) {
 	departamentoCompras, _ := gestor.GestionDepartamental.GetDepartamento(1)
@@ -30,9 +84,9 @@ func ContruirRelaciones(t *testing.T, gestor *sxengine.GestorDeIndicadores) {
 	indicadorTiempoPromedio, _ := gestor.GestionDeIndicadores.GetIndicadorById(2)
 	indicadorContratosPymes, _ := gestor.GestionDeIndicadores.GetIndicadorById(3)
 
-	gestor.AsignarIndicador(departamentoCompras.IdDepartamento, indicadorExpedienteCompras.IdIndicador)
-	gestor.AsignarIndicador(departamentoCompras.IdDepartamento, indicadorTiempoPromedio.IdIndicador)
-	gestor.AsignarIndicador(departamentoCompras.IdDepartamento, indicadorContratosPymes.IdIndicador)
+	gestor.AsignarIndicador(departamentoCompras.IdDepartamento, indicadorExpedienteCompras.IdIndicador, ayer)
+	gestor.AsignarIndicador(departamentoCompras.IdDepartamento, indicadorTiempoPromedio.IdIndicador, ayer)
+	gestor.AsignarIndicador(departamentoCompras.IdDepartamento, indicadorContratosPymes.IdIndicador, ayer)
 
 	if len(gestor.RelacionDepartamentoIndicador) != 3 {
 		t.Errorf("Expected 1 relacion, got %d", len(gestor.RelacionDepartamentoIndicador))
@@ -120,9 +174,9 @@ func ConstruirDimensiones(t *testing.T, gestor *sxengine.GestorDeIndicadores) {
 		Codigo:     "var2",
 	})
 
-    if len(indicadorTiempoPromedio.Variables) != 2 {
-        t.Errorf("Expected 2 variables, got %d", len(indicadorTiempoPromedio.Variables))
-    }
+	if len(indicadorTiempoPromedio.Variables) != 2 {
+		t.Errorf("Expected 2 variables, got %d", len(indicadorTiempoPromedio.Variables))
+	}
 
 }
 func ConstruirDependencias(t *testing.T, gestor *sxengine.GestorDeIndicadores) {

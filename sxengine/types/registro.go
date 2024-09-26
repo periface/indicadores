@@ -1,5 +1,7 @@
 package types
 
+import "time"
+
 type Registro struct {
     IdRegistro int
     IdIndicador int
@@ -7,6 +9,8 @@ type Registro struct {
     IdVariable int
     idDimension int
     Valor float64
+    Fecha time.Time
+    IsOpen bool
 
     Indicador Indicador
     Departamento Departamento
